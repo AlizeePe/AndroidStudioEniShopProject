@@ -52,7 +52,6 @@ android {
 dependencies {
 
     implementation(libs.coil.network.okhttp)
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.coil.compose)
     implementation(libs.androidx.lifecycle.runtime.ktx)
