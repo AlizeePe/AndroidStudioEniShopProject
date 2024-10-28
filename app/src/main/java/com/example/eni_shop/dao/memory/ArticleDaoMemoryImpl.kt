@@ -45,4 +45,9 @@ class ArticleDaoMemoryImpl : ArticleDao {
         articlesList.add(article);
         return article.id;
     }
+
+    override fun findAll(): List<Article> {
+        return articlesList;
+    }
+
 }

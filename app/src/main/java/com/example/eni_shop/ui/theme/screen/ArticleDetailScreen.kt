@@ -29,7 +29,7 @@ import com.example.eni_shop.utils.toFrenchDate
 fun ArticleDetailScreen(modifier: Modifier = Modifier) {
     Scaffold(topBar = { EniShopTopBar() }) {
         Column(modifier = Modifier.padding(it)) {
-            ArticleDetail(ArticleRepository.getArticle(1)!!)
+            ArticleDetail(ArticleRepository().getArticle(1)!!)
         }
     }
 }
