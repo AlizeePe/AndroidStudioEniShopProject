@@ -1,7 +1,9 @@
 package com.example.eni_shop.ui.theme.screen
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,13 +17,15 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.Card
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -40,13 +44,14 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
 import com.example.eni_shop.bo.Article
-import com.example.eni_shop.ui.theme.common.EniShopTopBar
+import com.example.eni_shop.ui.theme.common.EniShopScaffold
 import com.example.eni_shop.vm.ArticleListViewModel
 
 @Composable
 fun ArticleListScreen(
     articleListViewModel: ArticleListViewModel = viewModel(factory = ArticleListViewModel.Factory),
-    modifier: Modifier = Modifier
+    onClickToArticleDetail: (Long) -> Unit,
+    onClickToAddArticle: () -> Unit
 ) {
     val articles by articleListViewModel.articles.collectAsState()
     val categories by articleListViewModel.categories.collectAsState()
@@ -63,27 +68,35 @@ fun ArticleListScreen(
         articles
     }
 
-    Scaffold(topBar = { EniShopTopBar() }) {
+    EniShopScaffold(
+        floatingActionButton = { ArticleListFAB(onClickToAddArticle = onClickToAddArticle) }) {
         Column(
             modifier = Modifier
-                .padding(it)
                 .padding(horizontal = 8.dp)
         ) {
             CategoryFilterChip(
                 categories = categories,
                 category = category,
                 onCategoryChange = { category = it })
-            ArticleList(articles = filteredArticles)
+            ArticleList(
+                articles = filteredArticles,
+                onClickToArticleDetail = onClickToArticleDetail
+            )
         }
     }
 }
 
 @Composable
-fun ArticleItem(article: Article, modifier: Modifier = Modifier) {
+fun ArticleItem(
+    article: Article,
+    modifier: Modifier = Modifier,
+    onClickToArticleDetail: (Long) -> Unit
+) {
 
     Card(
         shape = RoundedCornerShape(8.dp),
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary)
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
+        modifier = Modifier.clickable { onClickToArticleDetail(article.id) }
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -117,7 +130,8 @@ fun ArticleItem(article: Article, modifier: Modifier = Modifier) {
 @Composable
 fun ArticleList(
     articles: List<Article>,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onClickToArticleDetail: (Long) -> Unit
 ) {
 
     LazyVerticalGrid(
@@ -126,7 +140,7 @@ fun ArticleList(
         horizontalArrangement = Arrangement.spacedBy(4.dp)
     ) {
         items(articles) { article ->
-            ArticleItem(article = article)
+            ArticleItem(article = article, onClickToArticleDetail = onClickToArticleDetail)
         }
     }
 }
@@ -172,7 +186,22 @@ fun CategoryFilterChip(
 }
 
 @Composable
+fun ArticleListFAB(onClickToAddArticle: () -> Unit) {
+    FloatingActionButton(
+        onClick = onClickToAddArticle,
+        shape = CircleShape,
+        elevation = FloatingActionButtonDefaults.elevation(defaultElevation = 4.dp)
+    ) {
+        Image(
+            imageVector = Icons.Default.Add,
+            contentDescription = "Add article",
+            modifier = Modifier.size(40.dp)
+        )
+    }
+}
+
+@Composable
 @Preview
-fun previewk() {
-    ArticleListScreen()
+fun ListPreview() {
+    // ArticleListScreen()
 }

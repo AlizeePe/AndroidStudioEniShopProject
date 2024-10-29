@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,7 +29,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
 import com.example.eni_shop.bo.Article
-import com.example.eni_shop.ui.theme.common.EniShopTopBar
+import com.example.eni_shop.ui.theme.common.EniShopScaffold
 import com.example.eni_shop.utils.toFrenchDate
 import com.example.eni_shop.vm.ArticleDetailViewModel
 
@@ -38,6 +37,7 @@ import com.example.eni_shop.vm.ArticleDetailViewModel
 fun ArticleDetailScreen(
     articleDetailViewModel: ArticleDetailViewModel = viewModel(factory = ArticleDetailViewModel.Factory),
     articleId: Long,
+    navigationIcon: @Composable () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val article by articleDetailViewModel.article.collectAsState();
@@ -46,8 +46,8 @@ fun ArticleDetailScreen(
         articleDetailViewModel.getArticleById(articleId)
     }
 
-    Scaffold(topBar = { EniShopTopBar() }) {
-        Column(modifier = Modifier.padding(it)) {
+    EniShopScaffold(navigationIcon = navigationIcon) {
+        Column() {
             article?.let { it1 -> ArticleDetail(article = it1) }
         }
     }
