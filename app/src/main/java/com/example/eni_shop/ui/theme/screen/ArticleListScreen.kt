@@ -4,6 +4,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
@@ -63,7 +64,11 @@ fun ArticleListScreen(
     }
 
     Scaffold(topBar = { EniShopTopBar() }) {
-        Column(modifier = Modifier.padding(it).padding(horizontal = 8.dp)) {
+        Column(
+            modifier = Modifier
+                .padding(it)
+                .padding(horizontal = 8.dp)
+        ) {
             CategoryFilterChip(
                 categories = categories,
                 category = category,
@@ -82,7 +87,9 @@ fun ArticleItem(article: Article, modifier: Modifier = Modifier) {
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.padding(vertical = 4.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 4.dp)
         ) {
             AsyncImage(
                 model = article.urlImage,
@@ -92,18 +99,18 @@ fun ArticleItem(article: Article, modifier: Modifier = Modifier) {
                     .border(1.dp, MaterialTheme.colorScheme.inverseSurface, CircleShape)
                     .padding(8.dp)
             )
+            Text(
+                text = article.name,
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+                maxLines = 2,
+                minLines = 2,
+                overflow = TextOverflow.Ellipsis,
+                textAlign = TextAlign.Justify,
+                modifier = Modifier.padding(8.dp)
+            )
+            Text(text = " ${String.format("%.2f", article.price)} € ")
         }
-        Text(
-            text = article.name,
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Bold,
-            maxLines = 2,
-            minLines = 2,
-            overflow = TextOverflow.Ellipsis,
-            textAlign = TextAlign.Justify,
-            modifier = Modifier.padding(8.dp)
-        )
-        Text(text = " ${String.format("%.2f",article.price)} € ")
     }
 }
 
