@@ -29,6 +29,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
@@ -70,6 +71,12 @@ fun SettingsMenu() {
 
     val context = LocalContext.current
     val coroutine = rememberCoroutineScope()
+
+    LaunchedEffect(Unit) {
+        DataStoreManager.isDarkModeActivated(context).collect{
+            isDarkTheme = it
+        }
+    }
 
     IconButton(onClick = { expanded = !expanded }) {
         Icon(imageVector = Icons.Default.Menu, contentDescription = "Settings")
