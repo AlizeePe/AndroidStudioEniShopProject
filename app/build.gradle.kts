@@ -52,6 +52,8 @@ android {
 dependencies {
 
     implementation(libs.coil.network.okhttp)
+    implementation (libs.androidx.datastore.preferences)
+    implementation (libs.kotlinx.coroutines.android)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.material.icons.extended)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
