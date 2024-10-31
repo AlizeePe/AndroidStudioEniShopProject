@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    id("kotlin-kapt")
 }
 
 android {
@@ -52,6 +53,11 @@ android {
 dependencies {
 
     implementation(libs.coil.network.okhttp)
+    val room_version = "2.5.0"
+    implementation(libs.androidx.room.runtime)
+    annotationProcessor(libs.androidx.room.compiler)
+    kapt("androidx.room:room-compiler:$room_version")
+    testImplementation(libs.androidx.room.testing)
     implementation (libs.androidx.datastore.preferences)
     implementation (libs.kotlinx.coroutines.android)
     implementation(libs.androidx.navigation.compose)

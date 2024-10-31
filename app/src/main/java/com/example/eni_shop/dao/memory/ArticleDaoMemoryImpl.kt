@@ -50,4 +50,8 @@ class ArticleDaoMemoryImpl : ArticleDao {
         return articlesList;
     }
 
+    override fun deleteArticle(article: Article) {
+        articlesList.remove(article)
+    }
+
 }

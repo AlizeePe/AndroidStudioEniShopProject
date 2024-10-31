@@ -2,6 +2,7 @@ package com.example.eni_shop.ui.theme.screen;
 
 import android.content.Intent
 import android.net.Uri
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -40,22 +41,50 @@ fun ArticleDetailScreen(
     navigationIcon: @Composable () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val article by articleDetailViewModel.article.collectAsState();
+    val article by articleDetailViewModel.currentArticle.collectAsState()
+    val isArticleFav by articleDetailViewModel.isArticleFav.collectAsState()
+    val context = LocalContext.current
 
     LaunchedEffect(Unit) {
         articleDetailViewModel.getArticleById(articleId)
+        articleDetailViewModel.getArticleFav(articleId)
     }
 
     EniShopScaffold(navigationIcon = navigationIcon) {
         Column() {
-            article?.let { it1 -> ArticleDetail(article = it1) }
+            article?.let { it1 ->
+                ArticleDetail(
+                    article = it1,
+                    isArticleFav = isArticleFav,
+                    onArticleFavChange = { isChecked ->
+                        if (isChecked) {
+                            articleDetailViewModel.saveArticleFav()
+                            Toast.makeText(
+                                context,
+                                "Article ajouté aux favoris",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        } else {
+                            articleDetailViewModel.deleteArticleFav()
+                            Toast.makeText(
+                                context,
+                                "Article supprimé des favoris",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    })
+            }
         }
     }
 }
 
-
 @Composable
-fun ArticleDetail(article: Article, modifier: Modifier = Modifier) {
+fun ArticleDetail(
+    article: Article,
+    isArticleFav: Boolean,
+    onArticleFavChange: (Boolean) -> Unit,
+    modifier: Modifier = Modifier
+) {
     val context = LocalContext.current
 
     val articleName = " ${article.name}+eni+shop"
@@ -110,7 +139,7 @@ fun ArticleDetail(article: Article, modifier: Modifier = Modifier) {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {
-            Checkbox(checked = true, onCheckedChange = {})
+            Checkbox(checked = isArticleFav, onCheckedChange = onArticleFavChange)
             Text(text = "Favoris ?")
         }
     }

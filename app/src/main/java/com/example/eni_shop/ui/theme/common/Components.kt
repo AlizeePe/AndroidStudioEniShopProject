@@ -73,7 +73,7 @@ fun SettingsMenu() {
     val coroutine = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
-        DataStoreManager.isDarkModeActivated(context).collect{
+        DataStoreManager.isDarkModeActivated(context).collect {
             isDarkTheme = it
         }
     }
@@ -172,18 +172,19 @@ fun NavigationBackIcon(onClickToBack: () -> Unit) {
 fun EniShopScaffold(
     navigationIcon: @Composable () -> Unit = {},
     floatingActionButton: @Composable () -> Unit = {},
+    bottomBar: @Composable () -> Unit = {},
     content: @Composable () -> Unit
 ) {
     Scaffold(
         topBar = { EniShopTopBar(navigationIcon = navigationIcon) },
-        floatingActionButton = floatingActionButton
+        floatingActionButton = floatingActionButton,
+        bottomBar = bottomBar
     ) {
         Column(modifier = Modifier.padding(it)) {
             content()
         }
     }
 }
-
 
 @Composable
 @Preview

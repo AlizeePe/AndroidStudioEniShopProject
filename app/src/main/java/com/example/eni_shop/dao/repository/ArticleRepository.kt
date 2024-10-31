@@ -2,22 +2,40 @@ package com.example.eni_shop.dao.repository
 
 import com.example.eni_shop.bo.Article
 import com.example.eni_shop.dao.ArticleDao
-
-import com.example.eni_shop.dao.network.DaoFactory
 import com.example.eni_shop.dao.network.DaoType
 
-class ArticleRepository {
-    private val articleDao: ArticleDao = DaoFactory.createArticleDao(DaoType.MEMORY);
+class ArticleRepository(
+    private val articleDaoRoomImpl: ArticleDao,
+    private val articleDaoMemoryImpl: ArticleDao
+) {
 
-    fun getArticle(id: Long): Article? {
-        return articleDao.findById(id);
-    }
-    fun addArticle(article: Article): Long {
-        return articleDao.insert(article);
+    // méthode MEMORY
+    fun getArticle(id: Long, type: DaoType = DaoType.MEMORY): Article? {
+        return when (type) {
+            DaoType.MEMORY -> articleDaoMemoryImpl.findById(id)
+            else -> articleDaoRoomImpl.findById(id)
+        }
     }
 
-    fun getAllArticles(): List<Article> {
-        return articleDao.findAll()
+    fun getAllArticles(type: DaoType = DaoType.MEMORY): List<Article> {
+        return when (type) {
+            DaoType.MEMORY -> articleDaoMemoryImpl.findAll()
+            else -> articleDaoRoomImpl.findAll()
+        }
+    }
+
+    fun addArticle(article: Article, type: DaoType = DaoType.MEMORY): Long {
+        return when (type) {
+            DaoType.MEMORY -> articleDaoMemoryImpl.insert(article)
+            else -> articleDaoRoomImpl.insert(article)
+        }
+    }
+
+    fun deleteArticle(article: Article, type: DaoType = DaoType.MEMORY) {
+        when (type) {
+            DaoType.MEMORY -> articleDaoMemoryImpl.deleteArticle(article)
+            else -> articleDaoRoomImpl.deleteArticle(article)
+        }
     }
 
 }

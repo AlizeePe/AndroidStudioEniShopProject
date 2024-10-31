@@ -11,6 +11,7 @@ abstract class DaoFactory {
             when (type) {
                 DaoType.MEMORY -> dao = ArticleDaoMemoryImpl()
                 DaoType.NETWORK -> TODO()
+                DaoType.ROOM -> TODO()
             }
             return dao;
         }
