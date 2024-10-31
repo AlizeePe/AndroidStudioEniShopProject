@@ -31,7 +31,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
 import com.example.eni_shop.bo.Article
 import com.example.eni_shop.ui.theme.common.EniShopScaffold
-import com.example.eni_shop.utils.toFrenchDate
 import com.example.eni_shop.vm.ArticleDetailViewModel
 
 @Composable
@@ -130,7 +129,7 @@ fun ArticleDetail(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(text = "Prix ${article.price} € ")
-            Text(text = "Date de sortie : ${article.date.toFrenchDate()}")
+            Text(text = "Date de sortie : ${article.date}")
         }
         Row(
             modifier = Modifier

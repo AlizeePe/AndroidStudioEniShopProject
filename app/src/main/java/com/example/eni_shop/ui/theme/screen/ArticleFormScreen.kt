@@ -17,6 +17,7 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -28,15 +29,22 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.eni_shop.ui.theme.common.EniShopScaffold
 import com.example.eni_shop.ui.theme.common.EniShopTextField
+import com.example.eni_shop.vm.ArticleFormViewModel
 
 @Composable
-fun ArticleFormScreen(navigationIcon: @Composable () -> Unit) {
+fun ArticleFormScreen(
+    navigationIcon: @Composable () -> Unit,
+    articleFormViewModel: ArticleFormViewModel = viewModel(factory = ArticleFormViewModel.Factory)
+) {
     val context = LocalContext.current
     var title by rememberSaveable {
         mutableStateOf("")
     }
+
+    val categories by articleFormViewModel.categories.collectAsState()
 
     EniShopScaffold(navigationIcon = navigationIcon) {
         Column(
@@ -46,7 +54,7 @@ fun ArticleFormScreen(navigationIcon: @Composable () -> Unit) {
                     rememberScrollState()
                 )
         ) {
-            ArticleForm(title = title, onTitleChange = { title = it })
+            ArticleForm(title = title, onTitleChange = { title = it }, categories = categories)
             Button(onClick = {
                 Toast.makeText(context, "$title ajouté", Toast.LENGTH_SHORT).show()
 
@@ -58,7 +66,12 @@ fun ArticleFormScreen(navigationIcon: @Composable () -> Unit) {
 }
 
 @Composable
-fun ArticleForm(modifier: Modifier = Modifier, title: String, onTitleChange: (String) -> Unit) {
+fun ArticleForm(
+    categories: List<String>,
+    modifier: Modifier = Modifier,
+    title: String,
+    onTitleChange: (String) -> Unit
+) {
 
     var description by rememberSaveable {
         mutableStateOf("")
@@ -89,13 +102,12 @@ fun ArticleForm(modifier: Modifier = Modifier, title: String, onTitleChange: (St
             },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
         )
-        DropDownMenuCategories()
+        DropDownMenuCategories(categories = categories)
     }
 }
 
 @Composable
-fun DropDownMenuCategories() {
-    val categories = listOf("electronics", "jewelery", "men's clothing", "women's clothing")
+fun DropDownMenuCategories(categories: List<String>) {
     var expanded by remember { mutableStateOf(false) }
     var category by remember { mutableStateOf("") }
 

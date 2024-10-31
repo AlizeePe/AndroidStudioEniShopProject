@@ -1,41 +1,42 @@
 package com.example.eni_shop.dao.repository
 
+import com.example.eni_shop.services.ShopService
 import com.example.eni_shop.bo.Article
 import com.example.eni_shop.dao.ArticleDao
 import com.example.eni_shop.dao.network.DaoType
 
 class ArticleRepository(
     private val articleDaoRoomImpl: ArticleDao,
-    private val articleDaoMemoryImpl: ArticleDao
+    private val shopService: ShopService
 ) {
 
-    // méthode MEMORY
-    fun getArticle(id: Long, type: DaoType = DaoType.MEMORY): Article? {
+    suspend fun getArticle(id: Long, type: DaoType = DaoType.NETWORK): Article? {
         return when (type) {
-            DaoType.MEMORY -> articleDaoMemoryImpl.findById(id)
+            DaoType.NETWORK -> shopService.getArticleById(id)
             else -> articleDaoRoomImpl.findById(id)
         }
     }
 
-    fun getAllArticles(type: DaoType = DaoType.MEMORY): List<Article> {
+    suspend fun getAllArticles(type: DaoType = DaoType.NETWORK): List<Article> {
         return when (type) {
-            DaoType.MEMORY -> articleDaoMemoryImpl.findAll()
+            DaoType.NETWORK -> shopService.getAllArticles()
             else -> articleDaoRoomImpl.findAll()
         }
     }
 
-    fun addArticle(article: Article, type: DaoType = DaoType.MEMORY): Long {
+    suspend fun addArticle(article: Article, type: DaoType = DaoType.NETWORK): Any {
         return when (type) {
-            DaoType.MEMORY -> articleDaoMemoryImpl.insert(article)
+            DaoType.NETWORK -> shopService.addArticle(article)
             else -> articleDaoRoomImpl.insert(article)
         }
     }
 
-    fun deleteArticle(article: Article, type: DaoType = DaoType.MEMORY) {
-        when (type) {
-            DaoType.MEMORY -> articleDaoMemoryImpl.deleteArticle(article)
-            else -> articleDaoRoomImpl.deleteArticle(article)
-        }
+    fun deleteArticle(article: Article, type: DaoType = DaoType.NETWORK) {
+        articleDaoRoomImpl.deleteArticle(article)
+    }
+
+    suspend fun getAllCategories(): List<String> {
+        return shopService.getAllCategories()
     }
 
 }

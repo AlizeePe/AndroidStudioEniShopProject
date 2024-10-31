@@ -6,10 +6,10 @@ import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.AP
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.example.eni_shop.bo.Article
-import com.example.eni_shop.dao.network.DaoFactory
 import com.example.eni_shop.dao.network.DaoType
 import com.example.eni_shop.dao.repository.ArticleRepository
 import com.example.eni_shop.db.EniShopDatabase
+import com.example.eni_shop.services.ShopService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -23,8 +23,10 @@ class ArticleDetailViewModel(private val articleRepository: ArticleRepository) :
     private val _isArticleFav = MutableStateFlow<Boolean>(false)
     val isArticleFav: StateFlow<Boolean> = _isArticleFav
 
-    fun getArticleById(id: Long) {
-        _currentArticle.value = articleRepository.getArticle(id)
+    suspend fun getArticleById(id: Long) {
+        viewModelScope.launch(Dispatchers.IO) {
+            _currentArticle.value = articleRepository.getArticle(id)
+        }
     }
 
     // récupération de l'article depuis la BDD
@@ -64,7 +66,7 @@ class ArticleDetailViewModel(private val articleRepository: ArticleRepository) :
                 return ArticleDetailViewModel(
                     ArticleRepository(
                         EniShopDatabase.getInstance(application.applicationContext).getArticleDao(),
-                        DaoFactory.createArticleDao(DaoType.MEMORY)
+                        ShopService.ShopApi.retrofitService
                     )
                 ) as T
             }

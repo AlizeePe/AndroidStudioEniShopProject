@@ -50,6 +50,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
 import com.example.eni_shop.bo.Article
 import com.example.eni_shop.ui.theme.common.EniShopScaffold
+import com.example.eni_shop.ui.theme.common.LoadingScreen
 import com.example.eni_shop.vm.ArticleListViewModel
 
 @Composable
@@ -60,38 +61,44 @@ fun ArticleListScreen(
 ) {
     val articles by articleListViewModel.articles.collectAsState()
     val categories by articleListViewModel.categories.collectAsState()
+    val isLoading by articleListViewModel.isLoading.collectAsState()
 
-    var category by remember {
-        mutableStateOf("")
-    }
-
-    val filteredArticles = if (category != "") {
-        articles.filter {
-            it.category == category
-        }
+    if (isLoading) {
+        LoadingScreen()
     } else {
-        articles
-    }
 
-    EniShopScaffold(
-        floatingActionButton = { ArticleListFAB(onClickToAddArticle = onClickToAddArticle) },
-        bottomBar = {
-            ArticleListBottomBar(
-                onClickToHome = { articleListViewModel.getArticles() },
-                onClickToFav = { articleListViewModel.getArticlesFav() })
-        }) {
-        Column(
-            modifier = Modifier
-                .padding(horizontal = 8.dp)
-        ) {
-            CategoryFilterChip(
-                categories = categories,
-                category = category,
-                onCategoryChange = { category = it })
-            ArticleList(
-                articles = filteredArticles,
-                onClickToArticleDetail = onClickToArticleDetail
-            )
+        var category by remember {
+            mutableStateOf("")
+        }
+
+        val filteredArticles = if (category != "") {
+            articles.filter {
+                it.category == category
+            }
+        } else {
+            articles
+        }
+
+        EniShopScaffold(
+            floatingActionButton = { ArticleListFAB(onClickToAddArticle = onClickToAddArticle) },
+            bottomBar = {
+                ArticleListBottomBar(
+                    onClickToHome = { articleListViewModel.getAllArticles() },
+                    onClickToFav = { articleListViewModel.getArticlesFav() })
+            }) {
+            Column(
+                modifier = Modifier
+                    .padding(horizontal = 8.dp)
+            ) {
+                CategoryFilterChip(
+                    categories = categories,
+                    category = category,
+                    onCategoryChange = { category = it })
+                ArticleList(
+                    articles = filteredArticles,
+                    onClickToArticleDetail = onClickToArticleDetail
+                )
+            }
         }
     }
 }
@@ -211,7 +218,7 @@ fun ArticleListFAB(onClickToAddArticle: () -> Unit) {
 }
 
 @Composable
-fun ArticleListBottomBar(onClickToHome : () -> Unit, onClickToFav : () -> Unit) {
+fun ArticleListBottomBar(onClickToHome: () -> Unit, onClickToFav: () -> Unit) {
     BottomAppBar() {
         Row(
             modifier = Modifier.fillMaxWidth(),
